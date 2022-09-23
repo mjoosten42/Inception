@@ -21,13 +21,10 @@ down:
 prune:
 	docker system prune -f
 
-C := wordpress
+C := mariadb
 
 shell:
 	docker exec -it $(C) bash
 
 curl:
 	curl -k https://localhost:443
-
-ssl:
-	openssl s_client -connect localhost:443

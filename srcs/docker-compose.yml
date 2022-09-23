@@ -10,6 +10,7 @@ services:
       - wordpress
     # Image needs to have exact name
     image: nginx
+    # Map host:443 to nginx's localhost:443
     ports:
       - "443:443"
     # Containers have to restart in case of a crash
