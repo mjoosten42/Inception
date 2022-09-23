@@ -1,0 +1,60 @@
+# A default network spanning all containers is automatically created
+
+services:
+ 
+  nginx:
+    # The dockerfile directory
+    build: requirements/nginx
+    container_name: nginx
+    depends_on:
+      - wordpress
+    # Image needs to have exact name
+    image: nginx
+    ports:
+      - "443:443"
+    # Containers have to restart in case of a crash
+    restart: always
+    volumes:
+      - wp:/var/www/html
+
+  wordpress:
+    build: requirements/wordpress
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    # Add .env file variables to the dockerfile's environment
+    env_file:
+      - .env
+    # Default php-fpm port
+    expose:
+      - "9000"
+    image: wordpress
+    restart: always
+    volumes:
+      - wp:/var/www/html
+
+  mariadb:
+    build: requirements/mariadb
+    container_name: mariadb
+    env_file:
+      - .env
+    expose:
+      - "3306"
+    image: mariadb
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+
+  wp:
+    driver_opts:
+      type: none
+      o: bind
+      # Where the volume is actually stored
+      device: ${VOLUME_PATH}/wp
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: ${VOLUME_PATH}/db
