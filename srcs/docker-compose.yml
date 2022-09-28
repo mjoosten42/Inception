@@ -8,6 +8,9 @@ services:
     container_name: nginx
     depends_on:
       - wordpress
+    # Add .env file variables to the containers environment
+    env_file:
+      - .env
     # Image needs to have exact name
     image: nginx
     # Map host:443 to nginx's localhost:443
@@ -23,12 +26,11 @@ services:
     container_name: wordpress
     depends_on:
       - mariadb
-    # Add .env file variables to the dockerfile's environment
     env_file:
       - .env
-    # Default php-fpm port
+    # Allow other containers to reach at 9000. Default php-fpm port
     expose:
-      - "9000"
+      - 9000
     image: wordpress
     restart: always
     volumes:
@@ -39,12 +41,14 @@ services:
     container_name: mariadb
     env_file:
       - .env
+    # Default MySQL port
     expose:
-      - "3306"
+      - 3306
     image: mariadb
     restart: always
-    volumes:
-      - db:/var/lib/mysql
+    # TODO: uncomment
+    # volumes:
+    #   - db:/var/lib/mysql
 
 volumes:
 
@@ -54,8 +58,9 @@ volumes:
       o: bind
       # Where the volume is actually stored
       device: ${VOLUME_PATH}/wp
-  db:
-    driver_opts:
-      type: none
-      o: bind
-      device: ${VOLUME_PATH}/db
+  # TODO: uncomment
+  # db:
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: ${VOLUME_PATH}/db

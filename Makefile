@@ -1,7 +1,7 @@
 COMPOSE := srcs/docker-compose.yml
 
-VOLUME_PATH := /Users/mjoosten/Desktop/Inception/data
 # VOLUME_PATH := /home/mjoosten/data
+VOLUME_PATH := /Users/mjoosten/Desktop/Inception/data
 
 # echo '127.0.0.1 mjoosten.42.fr' >> /etc/hosts
 
@@ -11,24 +11,21 @@ up: | $(VOLUME_PATH)
 $(VOLUME_PATH):
 	mkdir -p $@/db
 	mkdir -p $@/wp
-	cp info.php $@/wp/
+	cp *.php $@/wp/
 	cp favicon.ico $@/wp/
 
 stop:
 	docker-compose -f $(COMPOSE) stop
 
 down:
-	docker-compose -f $(COMPOSE) down
-	docker volume rm $$(docker volume ls -q)
-	$(RM) -r data
-
-prune:
-	docker system prune -af
+	docker-compose -f $(COMPOSE) down -v
 
 C := mariadb
 
 shell:
 	docker exec -it $(C) bash
 
+S := db.php
+
 curl:
-	curl -k https://localhost:443
+	curl -ik https://localhost:443/$(S)

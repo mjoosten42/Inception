@@ -1,4 +1,4 @@
-#syntax=docker/dockerfile:1.3-labs
+#syntax=docker/dockerfile:1.4
 # Allow dockerfile heredocs
 
 # Not allowed to do FROM nginx
