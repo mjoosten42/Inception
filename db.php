@@ -10,7 +10,7 @@ $database = "mysql";
 $conn = mysqli_connect($hostname, $username, $password, $database)
 	or die("Connection failed: " . mysqli_connect_error() . "\n");
 
-$query = mysqli_query($conn, "SELECT user, password, host FROM mysql.user")
+$query = mysqli_query($conn, "SELECT user, password, host FROM user")
 	or die("Query failed: " . mysqli_error($conn) . "\n");
 
 echo "

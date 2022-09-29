@@ -13,7 +13,7 @@ RUN <<EOF
 EOF
 
 # Add our configuration to the pool
-COPY conf /etc/php/7.3/fpm/pool.d
+COPY conf/www.conf /etc/php/7.3/fpm/pool.d
 
 # Manually start php-fpm
 # It usually starts automatically but we're missing an init process

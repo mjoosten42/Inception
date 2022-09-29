@@ -37,7 +37,14 @@ services:
       - wp:/var/www/html
 
   mariadb:
-    build: requirements/mariadb
+    build:
+      context: requirements/mariadb
+      # Add build stage variables, by default taken from environment
+      # .env contents are available to this file
+      args:
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_USER
+        - MYSQL_PASSWORD
     container_name: mariadb
     env_file:
       - .env
