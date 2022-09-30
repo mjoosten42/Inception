@@ -17,14 +17,10 @@ COPY conf/my.cnf /root/.my.cnf
 COPY tools/setup.sh /setup.sh
 
 # Install mariadb
-# Apt-get will initialize mariadb, meaning I don't need to run mysql_install_db or similar TODO
 # Add password to root and add a normal user
 RUN <<EOF
 	apt-get update
 	apt-get install -y mariadb-server
-EOF
-
-RUN <<EOF
 	service mysql start
 	./setup.sh
 EOF

@@ -62,6 +62,7 @@ volumes:
   wp:
     driver_opts:
       type: none
+      # Mount
       o: bind
       # Where the volume is actually stored
       device: ${VOLUME_PATH}/wp

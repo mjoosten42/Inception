@@ -20,7 +20,7 @@ stop:
 down:
 	docker-compose -f $(COMPOSE) down -v
 
-C := mariadb
+C := wordpress
 
 shell:
 	docker exec -it $(C) bash
