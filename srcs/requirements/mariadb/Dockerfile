@@ -14,26 +14,21 @@ ARG DB_NAME
 # Mysqld searches ~/.my.cnf
 COPY conf/my.cnf /root/.my.cnf
 
-# Script to setup mariadb
-COPY tools/setup.sh /setup.sh
-
-# TODO: run initialization in dockerfile using heredoc(?)
-# Install mariadb
+# True Inception
 # Add password to root and add a normal user
 RUN <<EOF
 	apt-get update
 	apt-get install -y mariadb-server
 	service mysql start
-	./setup.sh
+	mariadb << EOF
+		SET PASSWORD FOR "root"@"localhost" = PASSWORD("$MYSQL_ROOT_PASSWORD");
+		CREATE DATABASE IF NOT EXISTS $DB_NAME;
+		CREATE OR REPLACE USER "$MYSQL_USER"@"%" IDENTIFIED BY "$MYSQL_PASSWORD"; 
+		GRANT ALL ON $DB_NAME.* TO "$MYSQL_USER"@"%";
+		FLUSH PRIVILEGES;
+		EXIT
+	EOF
 EOF
-
-# RUN <<EOF
-# 	service mysql start
-# 	mariadb -p${MYSQL_ROOT_PASSWORD} << EOF
-# 		CREATE OR REPLACE USER 'test'@'%';
-# 		EXIT
-# 	EOF
-# EOF
 
 # Mysql daemon
 ENTRYPOINT mysqld
