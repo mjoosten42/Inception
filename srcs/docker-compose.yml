@@ -45,6 +45,7 @@ services:
         - MYSQL_ROOT_PASSWORD
         - MYSQL_USER
         - MYSQL_PASSWORD
+        - DB_NAME
     container_name: mariadb
     env_file:
       - .env
@@ -62,7 +63,6 @@ volumes:
   wp:
     driver_opts:
       type: none
-      # Mount
       o: bind
       # Where the volume is actually stored
       device: ${VOLUME_PATH}/wp
