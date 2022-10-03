@@ -54,9 +54,8 @@ services:
       - 3306
     image: mariadb
     restart: always
-    # TODO: uncomment
-    # volumes:
-    #   - db:/var/lib/mysql
+    volumes:
+      - db:/var/lib/mysql
 
 volumes:
 
@@ -66,9 +65,8 @@ volumes:
       o: bind
       # Where the volume is actually stored
       device: ${VOLUME_PATH}/wp
-  # TODO: uncomment
-  # db:
-  #   driver_opts:
-  #     type: none
-  #     o: bind
-  #     device: ${VOLUME_PATH}/db
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: ${VOLUME_PATH}/db

@@ -1,3 +1,5 @@
+# https://stackoverflow.com/questions/50817985/docker-tries-to-mkdir-the-folder-that-i-mount
+
 COMPOSE := srcs/docker-compose.yml
 
 # VOLUME_PATH := /home/mjoosten/data
@@ -14,13 +16,23 @@ $(VOLUME_PATH):
 	cp *.php $@/wp/
 	cp favicon.ico $@/wp/
 
-stop:
-	docker-compose -f $(COMPOSE) stop
-
 down:
 	docker-compose -f $(COMPOSE) down -v
 
-C := wordpress
+start:
+	docker-compose -f $(COMPOSE) start
+
+stop:
+	docker-compose -f $(COMPOSE) stop
+
+reset: down
+	docker system prune -af
+	rm -r data
+
+re: reset
+	make up
+
+C := mariadb
 
 shell:
 	docker exec -it $(C) bash

@@ -15,13 +15,18 @@ EOF
 # Add our configuration to the pool
 COPY conf/www.conf /etc/php/7.3/fpm/pool.d
 
-# I'm installing wordpress via wp-cli, because the mandatory site setup is difficult to do from the command line
+# Installing wp-cli and making it executable
+# /var/www doesn't exist yet because the volume hasn't been created
 RUN <<EOF
-	apt-get install -y wget
-	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x wp-cli.phar
-	mv wp-cli.phar /usr/local/sbin/wp
+	apt-get install -y wget mariadb-client
+	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp
+	chmod +x /usr/local/bin/wp
+	mkdir -p /var/www/wordpress
+	wp --allow-root --path=/var/www/wordpress core download
 EOF
 
+COPY tools/setup.sh /setup.sh
+
+# Wp needs to connect to the mariadb container, which isn't available during the build stage
 # -F: --nodaemonize AKA run in foreground
-ENTRYPOINT php-fpm7.3 -F
+ENTRYPOINT ./setup.sh && php-fpm7.3 -F
