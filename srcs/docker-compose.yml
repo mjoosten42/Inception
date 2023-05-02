@@ -1,22 +1,17 @@
-# A default network spanning all containers is automatically created
-
 services:
- 
+
   nginx:
-    # The dockerfile directory
     build: requirements/nginx
     container_name: nginx
     depends_on:
       - wordpress
-    # Add .env file variables to the containers environment
     env_file:
       - .env
-    # Image needs to have exact name
     image: nginx
-    # Map host:443 to nginx's localhost:443
+    networks:
+      - inception
     ports:
       - "443:443"
-    # Containers have to restart in case of a crash
     restart: always
     volumes:
       - wp:/var/www/html
@@ -28,10 +23,11 @@ services:
       - mariadb
     env_file:
       - .env
-    # Allow other containers to reach at 9000. Default php-fpm port
     expose:
       - 9000
     image: wordpress
+    networks:
+      - inception
     restart: always
     volumes:
       - wp:/var/www/html
@@ -39,33 +35,33 @@ services:
   mariadb:
     build:
       context: requirements/mariadb
-      # Add build stage variables, by default taken from environment
-      # .env contents are available to this file
-      args:
-        - MYSQL_ROOT_PASSWORD
-        - MYSQL_USER
-        - MYSQL_PASSWORD
-        - DB_NAME
     container_name: mariadb
     env_file:
       - .env
-    # Default MySQL port
     expose:
       - 3306
     image: mariadb
+    networks:
+      - inception
     restart: always
     volumes:
       - db:/var/lib/mysql
 
+# Useless
+networks:
+  inception:
+    name: inception
+
 volumes:
 
   wp:
+    name: "wp"
     driver_opts:
       type: none
       o: bind
-      # Where the volume is actually stored
       device: ${VOLUME_PATH}/wp
   db:
+    name: "db"
     driver_opts:
       type: none
       o: bind

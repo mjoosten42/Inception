@@ -29,4 +29,5 @@ COPY tools/setup.sh /setup.sh
 
 # Wp needs to connect to the mariadb container, which isn't available during the build stage
 # -F: --nodaemonize AKA run in foreground
-ENTRYPOINT ./setup.sh && php-fpm7.3 -F
+# ENTRYPOINT ./setup.sh && php-fpm7.3 -F
+ENTRYPOINT [ "php-fpm7.3", "-F" ]

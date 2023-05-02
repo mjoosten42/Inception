@@ -1,33 +1,31 @@
-# https://stackoverflow.com/questions/50817985/docker-tries-to-mkdir-the-folder-that-i-mount
-
 COMPOSE := srcs/docker-compose.yml
 
-# VOLUME_PATH := /home/mjoosten/data
-VOLUME_PATH := /Users/mjoosten/Desktop/Inception/data
+# export VOLUME_PATH := /home/$(USER)/data
+export VOLUME_PATH := /Users/$(USER)/Desktop/Inception/data
 
 # echo '127.0.0.1 mjoosten.42.fr' >> /etc/hosts
 
 up: | $(VOLUME_PATH)
-	docker-compose -f $(COMPOSE) up --build -d 
+	docker compose -f $(COMPOSE) up --build -d
 
 $(VOLUME_PATH):
 	mkdir -p $@/db
 	mkdir -p $@/wp
-	cp *.php $@/wp/
-	cp favicon.ico $@/wp/
+	cp html/* $@/wp
 
 down:
-	docker-compose -f $(COMPOSE) down -v
+	docker compose -f $(COMPOSE) down
 
 start:
-	docker-compose -f $(COMPOSE) start
+	docker compose -f $(COMPOSE) start
 
 stop:
-	docker-compose -f $(COMPOSE) stop
+	docker compose -f $(COMPOSE) stop
 
-reset: down
+prune:
+	docker compose -f $(COMPOSE) down -v
 	docker system prune -af
-	rm -r data
+	$(RM) -r data
 
 re: reset
 	make up
@@ -35,7 +33,7 @@ re: reset
 C := mariadb
 
 shell:
-	docker exec -it $(C) bash
+	docker exec -itu 0 $(C) bash
 
 S := db.php
 

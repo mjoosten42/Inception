@@ -22,4 +22,4 @@ EOF
 COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Daemon off: run in foreground so the container doesn't exit immediately
-ENTRYPOINT nginx -g "daemon off;"
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
