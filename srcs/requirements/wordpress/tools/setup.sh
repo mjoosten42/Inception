@@ -1,16 +1,23 @@
-#!/bin/sh
+#!/bin/bash
 
-# This might error if mariadb hasn't started yet, but the wordpress container will just restart and retry
+if ! wp core is-installed; then
+	wp core download
 
-wp --allow-root --path=/var/www/wordpress config create \
-	--dbname=$DB_NAME			\
-	--dbuser=$MYSQL_USER		\
-	--dbpass=$MYSQL_PASSWORD	\
-	--dbhost=mariadb
-wp --allow-root --path=/var/www/wordpress core install	\
-	--admin_user=root						\
-	--admin_password=$MYSQL_ROOT_PASSWORD	\
-	--url=mjoosten.42.fr					\
-	--title=Inception						\
-	--admin_email=noreply@42.fr				\
-	--skip-email
+	wp config create				\
+		--dbhost=mariadb			\
+		--dbname=$DB_NAME			\
+		--dbuser=$MYSQL_USER		\
+		--dbpass=$MYSQL_PASSWORD
+
+	wp core install								\
+		--title=Inception						\
+		--url=$DOMAIN_NAME:443					\
+		--admin_user=root						\
+		--admin_password=$MYSQL_ROOT_PASSWORD	\
+		--admin_email=noreply@42.fr				\
+		--skip-email
+
+	wp user create $MYSQL_USER --user_pass=$MYSQL_PASSWORD noreply+1@42.fr
+fi
+
+php-fpm7.3 --nodaemonize

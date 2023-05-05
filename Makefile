@@ -1,5 +1,6 @@
 COMPOSE := srcs/docker-compose.yml
 
+# TODO :switch
 # export VOLUME_PATH := /home/$(USER)/data
 export VOLUME_PATH := /Users/$(USER)/Desktop/Inception/data
 
@@ -11,7 +12,6 @@ up: | $(VOLUME_PATH)
 $(VOLUME_PATH):
 	mkdir -p $@/db
 	mkdir -p $@/wp
-	cp html/* $@/wp
 
 down:
 	docker compose -f $(COMPOSE) down
@@ -27,15 +27,13 @@ prune:
 	docker system prune -af
 	$(RM) -r data
 
-re: reset
+re: prune
 	make up
 
-C := mariadb
+C := wordpress
 
 shell:
 	docker exec -itu 0 $(C) bash
-
-S := db.php
 
 curl:
 	curl -ik https://localhost:443/$(S)

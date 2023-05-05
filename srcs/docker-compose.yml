@@ -1,15 +1,17 @@
 services:
 
   nginx:
-    build: requirements/nginx
+    build:
+      args:
+        - DOMAIN_NAME
+      context: requirements/nginx
     container_name: nginx
     depends_on:
-      - wordpress
+      wordpress:
+        condition: service_healthy # Wait for the wordpress to be installed
     env_file:
       - .env
     image: nginx
-    networks:
-      - inception
     ports:
       - "443:443"
     restart: always
@@ -20,37 +22,28 @@ services:
     build: requirements/wordpress
     container_name: wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy # Wait for the db to be reachable
     env_file:
       - .env
-    expose:
-      - 9000
     image: wordpress
-    networks:
-      - inception
     restart: always
     volumes:
       - wp:/var/www/html
 
   mariadb:
     build:
+      args:
+        - MYSQL_USER
+        - MYSQL_PASSWORD
       context: requirements/mariadb
     container_name: mariadb
     env_file:
       - .env
-    expose:
-      - 3306
     image: mariadb
-    networks:
-      - inception
     restart: always
     volumes:
       - db:/var/lib/mysql
-
-# Useless
-networks:
-  inception:
-    name: inception
 
 volumes:
 
@@ -59,10 +52,10 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ${VOLUME_PATH}/wp
+      device: $VOLUME_PATH/wp
   db:
     name: "db"
     driver_opts:
       type: none
       o: bind
-      device: ${VOLUME_PATH}/db
+      device: $VOLUME_PATH/db
