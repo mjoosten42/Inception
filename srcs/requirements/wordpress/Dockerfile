@@ -16,8 +16,12 @@ RUN <<EOF
 	install -d /run/php -o www-data -g www-data
 EOF
 
-# Add our configuration to the pool
-COPY conf/www.conf /etc/php/7.3/fpm/pool.d
+# TODO
+ARG X=15
+RUN echo $X
+
+# Add my configuration to the pool
+COPY conf/ /etc/php/7.3/fpm/pool.d/
 COPY tools/setup.sh /setup.sh
 
 USER www-data

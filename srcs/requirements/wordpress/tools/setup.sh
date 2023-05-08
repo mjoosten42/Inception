@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: remove WP_DEBUG
+
 if ! wp core is-installed; then
 	wp core download
 
@@ -7,7 +9,11 @@ if ! wp core is-installed; then
 		--dbhost=mariadb			\
 		--dbname=$DB_NAME			\
 		--dbuser=$MYSQL_USER		\
-		--dbpass=$MYSQL_PASSWORD
+		--dbpass=$MYSQL_PASSWORD	\
+		--extra-php <<-EOF
+			define( 'WP_DEBUG', true );
+			define( 'WP_DEBUG_LOG', true );
+		EOF
 
 	wp core install								\
 		--title=Inception						\

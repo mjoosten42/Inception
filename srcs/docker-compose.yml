@@ -8,7 +8,7 @@ services:
     container_name: nginx
     depends_on:
       wordpress:
-        condition: service_healthy # Wait for the wordpress to be installed
+        condition: service_healthy # Wait for wordpress to be installed
     env_file:
       - .env
     image: nginx
@@ -34,8 +34,10 @@ services:
   mariadb:
     build:
       args:
+        - DB_NAME
         - MYSQL_USER
         - MYSQL_PASSWORD
+        - MYSQL_ROOT_PASSWORD
       context: requirements/mariadb
     container_name: mariadb
     env_file:

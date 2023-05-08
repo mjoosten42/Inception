@@ -1,8 +1,6 @@
-COMPOSE := srcs/docker-compose.yml
+include srcs/.env
 
-# TODO :switch
-# export VOLUME_PATH := /home/$(USER)/data
-export VOLUME_PATH := /Users/$(USER)/Desktop/Inception/data
+COMPOSE := srcs/docker-compose.yml
 
 # echo '127.0.0.1 mjoosten.42.fr' >> /etc/hosts
 
@@ -10,8 +8,7 @@ up: | $(VOLUME_PATH)
 	docker compose -f $(COMPOSE) up --build -d
 
 $(VOLUME_PATH):
-	mkdir -p $@/db
-	mkdir -p $@/wp
+	mkdir -p $@/db $@/wp
 
 down:
 	docker compose -f $(COMPOSE) down
