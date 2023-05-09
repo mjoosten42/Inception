@@ -2,8 +2,6 @@ include srcs/.env
 
 COMPOSE := srcs/docker-compose.yml
 
-# echo '127.0.0.1:443 mjoosten.42.fr' >> /etc/hosts
-
 up: | $(VOLUME_PATH)
 	docker compose -f $(COMPOSE) up --build -d
 
@@ -34,3 +32,6 @@ shell:
 
 curl:
 	curl -ik https://localhost:443/$(S)
+
+# echo 127.0.0.1 mjoosten.42.fr >> /etc/hosts
+# make curl docker docker-cli-compose git vim

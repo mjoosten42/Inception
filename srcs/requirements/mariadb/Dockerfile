@@ -37,7 +37,7 @@ EOF
 
 # Wait for mysql to be reachable before starting wordpress
 # Can't do JSON syntax because variables need to be expanded
-HEALTHCHECK --interval=1s --retries=30 CMD mysql -u $MYSQL_USER -p$MYSQL_PASSWORD
+HEALTHCHECK --interval=1s --retries=10 CMD mysql -u $MYSQL_USER -p$MYSQL_PASSWORD
 
 # Path must be absolute
 ENTRYPOINT [ "mysqld", "--init-file", "/home/mysql/init.sql" ]
