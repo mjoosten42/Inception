@@ -16,19 +16,15 @@ RUN <<EOF
 	install -d /run/php -o www-data -g www-data
 EOF
 
-# TODO
-ARG X=15
-RUN echo $X
-
-# Add my configuration to the pool
-COPY conf/ /etc/php/7.3/fpm/pool.d/
+# Overwrite default www.conf
+COPY conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 COPY tools/setup.sh /setup.sh
 
 USER www-data
 
 WORKDIR /var/www/html
 
-HEALTHCHECK --interval=1s --retries=60 CMD [ "wp", "core", "is-installed" ]
+HEALTHCHECK --interval=1s --retries=30 CMD [ "wp", "core", "is-installed" ]
 
 # wp needs to connect to the mariadb container, which isn't available during the build stage
 ENTRYPOINT [ "/setup.sh" ]

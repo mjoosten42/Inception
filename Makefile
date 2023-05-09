@@ -2,7 +2,7 @@ include srcs/.env
 
 COMPOSE := srcs/docker-compose.yml
 
-# echo '127.0.0.1 mjoosten.42.fr' >> /etc/hosts
+# echo '127.0.0.1:443 mjoosten.42.fr' >> /etc/hosts
 
 up: | $(VOLUME_PATH)
 	docker compose -f $(COMPOSE) up --build -d

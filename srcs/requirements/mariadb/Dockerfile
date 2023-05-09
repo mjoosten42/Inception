@@ -26,8 +26,8 @@ USER mysql
 
 WORKDIR /home/mysql
 
-# mysqld doesn't read env
-COPY --chown=mysql:mysql <<-EOF init.sql
+# mysqld --init-file doesn't read env
+COPY --chown=mysql <<-EOF init.sql
 	ALTER USER "root"@"localhost" IDENTIFIED BY "$MYSQL_ROOT_PASSWORD";
 	CREATE DATABASE IF NOT EXISTS $DB_NAME;
 	CREATE USER IF NOT EXISTS "$MYSQL_USER"@"%" IDENTIFIED BY "$MYSQL_PASSWORD";
@@ -37,6 +37,7 @@ EOF
 
 # Wait for mysql to be reachable before starting wordpress
 # Can't do JSON syntax because variables need to be expanded
-HEALTHCHECK --interval=1s CMD mysql -u $MYSQL_USER -p$MYSQL_PASSWORD
+HEALTHCHECK --interval=1s --retries=30 CMD mysql -u $MYSQL_USER -p$MYSQL_PASSWORD
 
+# Path must be absolute
 ENTRYPOINT [ "mysqld", "--init-file", "/home/mysql/init.sql" ]

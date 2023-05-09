@@ -20,7 +20,7 @@ EOF
 
 COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 
-HEALTHCHECK --interval=1s CMD [ "nginx", "-t" ]
+HEALTHCHECK CMD [ "nginx", "-t" ]
 
 # Daemon off: run in foreground so the container doesn't exit immediately
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
