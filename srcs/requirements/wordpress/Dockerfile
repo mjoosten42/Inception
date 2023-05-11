@@ -3,17 +3,19 @@
 
 FROM debian:buster
 
+ADD --chmod=755 \
+	https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	/usr/local/bin/wp
+
 EXPOSE 9000
 
 # Install php fastcgi, to repond to nginx
 # php-fpm needs the /run/php but doesn't create it itself
+# /var/www/html volume is set to root if not created in a container
 RUN <<EOF
 	apt-get update
 	apt-get install -y php-fpm php-mysql curl mariadb-client
-	curl -o /usr/local/bin/wp \
-		https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x /usr/local/bin/wp
-	install -d /run/php -o www-data -g www-data
+	install -d /run/php /var/www/html -o www-data -g www-data
 EOF
 
 # Overwrite default www.conf

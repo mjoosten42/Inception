@@ -11,6 +11,7 @@ ARG DOMAIN_NAME
 RUN <<EOF
 	apt-get update
 	apt-get install -y nginx openssl
+	install -d /var/www/html -o www-data -g www-data
 	rm /etc/nginx/sites-enabled/*
 	openssl req -x509 -newkey rsa:4096 -nodes	\
 		-keyout /etc/nginx/key.pem				\

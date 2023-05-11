@@ -2,9 +2,6 @@ include srcs/.env
 
 COMPOSE := srcs/docker-compose.yml
 
-MYSQL = 101
-WWW-DATA = 33
-
 up: | $(VOLUME_PATH)
 	docker compose -f $(COMPOSE) up --build -d
 
@@ -21,6 +18,11 @@ start:
 
 stop:
 	docker compose -f $(COMPOSE) stop
+
+reset:
+	docker compose -f $(COMPOSE) down -v
+	$(RM) -r $(VOLUME_PATH)
+	service docker restart
 
 prune:
 	docker compose -f $(COMPOSE) down -v
