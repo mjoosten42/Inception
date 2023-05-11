@@ -8,7 +8,7 @@ up: | $(VOLUME_PATH)
 $(VOLUME_PATH):
 	mkdir -p $@/db $@/wp
 	chown -R $(MYSQL):$(MYSQL) $@/db
-	chown -R $(WWW-DATA):$(WWW-DATA) $@/wp
+	chown -R $(WWW_DATA):$(WWW_DATA) $@/wp
 
 down:
 	docker compose -f $(COMPOSE) down
