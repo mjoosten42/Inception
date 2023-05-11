@@ -2,11 +2,16 @@ include srcs/.env
 
 COMPOSE := srcs/docker-compose.yml
 
+MYSQL = 101
+WWW-DATA = 33
+
 up: | $(VOLUME_PATH)
 	docker compose -f $(COMPOSE) up --build -d
 
 $(VOLUME_PATH):
 	mkdir -p $@/db $@/wp
+	chown -R $(MYSQL):$(MYSQL) $@/db
+	chown -R $(WWW-DATA):$(WWW-DATA) $@/wp
 
 down:
 	docker compose -f $(COMPOSE) down
@@ -20,7 +25,13 @@ stop:
 prune:
 	docker compose -f $(COMPOSE) down -v
 	docker system prune -af
-	$(RM) -r data
+	$(RM) -r $(VOLUME_PATH)
+
+logs:
+	docker compose -f $(COMPOSE) logs
+
+config:
+	docker compose -f $(COMPOSE) config
 
 re: prune
 	make up
@@ -33,5 +44,3 @@ shell:
 curl:
 	curl -ik https://localhost:443/$(S)
 
-# echo 127.0.0.1 mjoosten.42.fr >> /etc/hosts
-# make curl docker docker-cli-compose git vim
